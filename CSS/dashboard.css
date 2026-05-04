@@ -1,0 +1,127 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  color: white;
+  background: linear-gradient(135deg, #0f172a, #1e3a8a, #312e81);
+}
+
+.dashboard {
+  min-height: 100vh;
+  padding: 25px;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 25px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+#logoutBtn {
+  border: none;
+  padding: 10px 18px;
+  border-radius: 12px;
+  color: white;
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.hero {
+  text-align: center;
+  margin: 70px auto 50px;
+}
+
+.hero h1 {
+  font-size: 42px;
+  margin-bottom: 15px;
+}
+
+.hero p {
+  font-size: 18px;
+  color: #dbeafe;
+}
+
+.cards {
+  display: flex;
+  gap: 25px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.card {
+  width: 300px;
+  padding: 30px;
+  border-radius: 22px;
+  background: rgba(255,255,255,0.13);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+  transition: 0.3s;
+  text-align: left;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+}
+
+.card h3 {
+  font-size: 23px;
+}
+
+.card p {
+  color: #dbeafe;
+  line-height: 1.5;
+}
+
+.card button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+  color: white;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #06b6d4, #3b82f6);
+  transition: 0.3s;
+}
+
+.card button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(59,130,246,0.35);
+}
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.language-select {
+  padding: 10px 12px;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  background: rgba(255,255,255,0.15);
+  outline: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.language-select option {
+  color: black;
+}

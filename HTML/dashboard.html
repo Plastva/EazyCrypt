@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <title>EazyCrypt Dashboard</title>
+  <link rel="stylesheet" href="../CSS/dashboard.css">
+</head>
+<body>
+
+  <div class="dashboard">
+
+    <nav class="navbar">
+      <div class="logo">🔐 EazyCrypt</div>
+
+      <div class="nav-actions">
+        <select id="languageSelect" class="language-select">
+          <option value="ro">RO</option>
+          <option value="en">EN</option>
+          <option value="ru">RU</option>
+        </select>
+
+        <button id="logoutBtn" data-i18n="logout">Logout</button>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <h1 data-i18n="dashboardWelcome">Bine ai venit în EazyCrypt</h1>
+      <p data-i18n="dashboardSubtitle">Platforma ta pentru criptarea și protejarea documentelor.</p>
+    </section>
+
+    <section class="cards">
+
+      <div class="card">
+        <h3 data-i18n="textCrypto">🔒 Criptare text</h3>
+        <p data-i18n="textCryptoDesc">Criptează rapid mesaje și informații importante.</p>
+        <button onclick="window.location.href='text-crypto.html'" data-i18n="start">Începe</button>
+      </div>
+
+      <div class="card">
+        <h3 data-i18n="fileCrypto">📁 Criptare fișiere</h3>
+        <p data-i18n="fileCryptoDesc">Protejează documente prin criptare securizată.</p>
+        <button onclick="window.location.href='file-crypto.html'" data-i18n="start">Începe</button>
+      </div>
+
+      <div class="card">
+        <h3 data-i18n="security">🛡️ Securitate</h3>
+        <p data-i18n="securityDesc">Cont protejat prin autentificare și verificare email.</p>
+        <button onclick="window.location.href='security.html'" data-i18n="details">Detalii</button>
+      </div>
+
+    </section>
+
+  </div>
+
+  <script src="../JS/translations.js"></script>
+  <script type="module" src="../JS/dashboard.js"></script>
+</body>
+</html>

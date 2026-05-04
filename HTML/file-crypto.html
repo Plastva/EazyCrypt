@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <title>Criptare Fișiere - EazyCrypt</title>
+  <link rel="stylesheet" href="../CSS/crypto-page.css">
+</head>
+<body>
+
+  <div class="page">
+
+    <nav class="navbar">
+      <div class="logo">🔐 EazyCrypt</div>
+
+      <div class="nav-actions">
+        <select id="languageSelect" class="language-select">
+          <option value="ro">RO</option>
+          <option value="en">EN</option>
+          <option value="ru">RU</option>
+        </select>
+
+        <button onclick="window.location.href='dashboard.html'" data-i18n="back">Înapoi</button>
+      </div>
+    </nav>
+
+    <div class="crypto-card">
+      <h1 data-i18n="fileCrypto">📁 Criptare fișiere</h1>
+      <p data-i18n="filePageDesc">Alege fișierul, parola și criptează documentul.</p>
+
+      <div id="fileMessage" class="message-box hidden"></div>
+
+      <input type="file" id="fileInput">
+      <input type="password" id="filePassword" data-i18n-placeholder="password" placeholder="Parolă">
+
+      <div class="password-rules">
+        <p id="fRuleLength">• Minim 8 caractere</p>
+        <p id="fRuleUpper">• O literă mare</p>
+        <p id="fRuleLower">• O literă mică</p>
+        <p id="fRuleNumber">• O cifră</p>
+        <p id="fRuleSymbol">• Un simbol</p>
+      </div>
+
+      <button id="encryptFileBtn" data-i18n="encryptFile">Criptează fișier</button>
+      <button id="decryptFileBtn" data-i18n="decryptFile">Decriptează fișier</button>
+
+      <p class="small-text" data-i18n="fileNote">
+        Fișierul criptat va fi descărcat automat cu extensia .eazycrypt.
+      </p>
+    </div>
+
+  </div>
+
+  <script src="../JS/translations.js"></script>
+  <script type="module" src="../JS/file-crypto.js"></script>
+</body>
+</html>

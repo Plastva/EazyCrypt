@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <title>Securitate - EazyCrypt</title>
+  <link rel="stylesheet" href="../CSS/crypto-page.css">
+</head>
+<body>
+
+  <div class="page">
+
+    <nav class="navbar">
+      <div class="logo">🔐 EazyCrypt</div>
+
+      <div class="nav-actions">
+        <select id="languageSelect" class="language-select">
+          <option value="ro">RO</option>
+          <option value="en">EN</option>
+          <option value="ru">RU</option>
+        </select>
+
+        <button onclick="window.location.href='dashboard.html'" data-i18n="back">Înapoi</button>
+      </div>
+    </nav>
+
+    <div class="crypto-card">
+
+      <h1 data-i18n="securityTitle">🛡️ Securitatea aplicației</h1>
+
+      <p data-i18n="securityIntro">
+        Aplicația EazyCrypt utilizează tehnologii moderne pentru a asigura protecția datelor utilizatorilor.
+      </p>
+
+      <h2 data-i18n="authTitle">🔐 Autentificare securizată</h2>
+      <ul>
+        <li data-i18n="auth1">Autentificare prin Firebase Authentication</li>
+        <li data-i18n="auth2">Verificare cont prin email</li>
+        <li data-i18n="auth3">Protecție împotriva accesului neautorizat</li>
+      </ul>
+
+      <h2 data-i18n="aesTitle">🔑 Criptare AES</h2>
+      <ul>
+        <li data-i18n="aes1">Algoritm AES-GCM (Advanced Encryption Standard)</li>
+        <li data-i18n="aes2">Criptare realizată direct în browser</li>
+        <li data-i18n="aes3">Parola NU este stocată pe server</li>
+      </ul>
+
+      <h2 data-i18n="dataTitle">🧠 Protecția datelor</h2>
+      <ul>
+        <li data-i18n="data1">Datele nu sunt salvate pe server</li>
+        <li data-i18n="data2">Procesarea se face local (client-side)</li>
+        <li data-i18n="data3">Fișierele criptate sunt descărcate doar de utilizator</li>
+      </ul>
+
+      <h2 data-i18n="recommendTitle">⚠️ Recomandări</h2>
+      <ul>
+        <li data-i18n="rec1">Folosește parole puternice</li>
+        <li data-i18n="rec2">Nu pierde parola — datele nu pot fi recuperate</li>
+        <li data-i18n="rec3">Nu distribui fișiere criptate fără parola corectă</li>
+      </ul>
+
+    </div>
+
+  </div>
+
+  <script src="../JS/translations.js"></script>
+</body>
+</html>

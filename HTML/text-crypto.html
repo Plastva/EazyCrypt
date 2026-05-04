@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <title>Criptare Text - EazyCrypt</title>
+  <link rel="stylesheet" href="../CSS/crypto-page.css">
+</head>
+<body>
+
+  <div class="page">
+
+    <nav class="navbar">
+      <div class="logo">🔐 EazyCrypt</div>
+
+      <div class="nav-actions">
+        <select id="languageSelect" class="language-select">
+          <option value="ro">RO</option>
+          <option value="en">EN</option>
+          <option value="ru">RU</option>
+        </select>
+
+        <button onclick="window.location.href='dashboard.html'">Înapoi</button>
+      </div>
+    </nav>
+
+    <div class="crypto-card">
+      <h1>🔒 Criptare text</h1>
+      <p>Introdu textul, parola și criptează informația.</p>
+
+      <div id="textMessage" class="message-box hidden"></div>
+
+      <div class="crypto-block">
+        <h2>1. Criptare</h2>
+
+        <textarea id="plainText" placeholder="Scrie textul normal aici..."></textarea>
+
+        <input type="password" id="textPassword" placeholder="Parolă">
+
+        <div class="password-rules">
+          <p id="tRuleLength">• Minim 8 caractere</p>
+          <p id="tRuleUpper">• O literă mare</p>
+          <p id="tRuleLower">• O literă mică</p>
+          <p id="tRuleNumber">• O cifră</p>
+          <p id="tRuleSymbol">• Un simbol</p>
+        </div>
+
+        <button id="encryptTextBtn">Criptează</button>
+
+        <textarea id="encryptedText" placeholder="Textul criptat apare aici..."></textarea>
+
+        <div class="action-row">
+          <button id="copyTextBtn" class="mini-btn">Copiază</button>
+          <button id="clearTextBtn" class="mini-btn">Șterge</button>
+        </div>
+      </div>
+
+      <div class="crypto-block">
+        <h2>2. Decriptare</h2>
+
+        <p class="hint-text">
+          🔽 Lipește textul criptat mai sus și apasă Decriptează
+        </p>
+
+        <button id="decryptTextBtn">Decriptează</button>
+
+        <textarea id="decryptedText" placeholder="Rezultatul apare aici..." readonly></textarea>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script type="module" src="../JS/text-crypto.js"></script>
+</body>
+</html>

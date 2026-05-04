@@ -1,0 +1,256 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  color: white;
+  background: linear-gradient(135deg, #0f172a, #1e3a8a, #312e81);
+}
+
+.page {
+  min-height: 100vh;
+  padding: 25px;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 25px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.navbar button,
+.crypto-card button {
+  border: none;
+  padding: 12px 18px;
+  border-radius: 12px;
+  color: white;
+  background: linear-gradient(135deg, #06b6d4, #3b82f6);
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.crypto-card {
+  max-width: 800px;
+  margin: 70px auto;
+  padding: 35px;
+  border-radius: 24px;
+  background: rgba(255,255,255,0.13);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 15px 45px rgba(0,0,0,0.3);
+}
+
+.crypto-card h1 {
+  margin-top: 0;
+  font-size: 34px;
+}
+
+.crypto-card p {
+  color: #dbeafe;
+}
+
+.crypto-card textarea {
+  width: 100%;
+  height: 120px;
+  margin: 12px 0;
+  padding: 14px;
+  resize: none;
+  border: none;
+  outline: none;
+  border-radius: 14px;
+  font-size: 15px;
+}
+
+.crypto-card input {
+  width: 100%;
+  padding: 14px;
+  margin: 12px 0;
+  border: none;
+  outline: none;
+  border-radius: 14px;
+  font-size: 15px;
+}
+
+.crypto-card button {
+  width: 100%;
+  margin-top: 12px;
+}
+
+.small-text {
+  font-size: 14px;
+}
+.crypto-card ul {
+  padding-left: 20px;
+}
+
+.crypto-card li {
+  margin: 8px 0;
+  color: #dbeafe;
+}
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.language-select {
+  padding: 10px 12px;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  background: rgba(255,255,255,0.15);
+  outline: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.language-select option {
+  color: black;
+}
+.password-rules {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.1);
+}
+
+.password-rules p {
+  margin: 5px 0;
+  font-size: 13px;
+  color: #fecaca;
+}
+
+.password-rules p.valid {
+  color: #bbf7d0;
+}
+.crypto-block {
+  margin-top: 25px;
+  padding: 22px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.08);
+}
+
+.crypto-block h2 {
+  margin-top: 0;
+  font-size: 22px;
+}
+
+.hint-text {
+  color: #dbeafe;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.message-box {
+  margin: 15px 0;
+  padding: 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.message-box.success {
+  background: rgba(34,197,94,0.18);
+  border: 1px solid rgba(34,197,94,0.5);
+  color: #bbf7d0;
+}
+
+.message-box.error {
+  background: rgba(239,68,68,0.18);
+  border: 1px solid rgba(239,68,68,0.5);
+  color: #fecaca;
+}
+
+.message-box.info {
+  background: rgba(59,130,246,0.18);
+  border: 1px solid rgba(59,130,246,0.5);
+  color: #bfdbfe;
+}
+
+.action-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.action-row button {
+  width: 50%;
+}
+
+.hidden {
+  display: none;
+}
+.action-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+/* butoane mici, clean */
+.mini-btn {
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 12px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  color: #e5e7eb;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(6px);
+  transition: 0.2s ease;
+}
+
+/* hover subtle */
+.mini-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255,255,255,0.18);
+}
+
+/* active click */
+.mini-btn:active {
+  transform: scale(0.97);
+}
+
+/* varianta specială pentru Copy (ușor accent) */
+#copyTextBtn {
+  background: rgba(59,130,246,0.18);
+}
+
+#copyTextBtn:hover {
+  background: linear-gradient(135deg, #06b6d4, #3b82f6);
+}
+
+/* Clear = mai soft / warning light */
+#clearTextBtn {
+  background: rgba(239,68,68,0.15);
+}
+
+#clearTextBtn:hover {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+}
+.mini-btn {
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 12px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  color: #e5e7eb;
+  background: rgba(255,255,255,0.12);
+  transition: 0.2s;
+}
+
+.mini-btn:hover {
+  background: linear-gradient(135deg, #06b6d4, #3b82f6);
+}
