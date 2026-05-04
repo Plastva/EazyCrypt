@@ -23,7 +23,6 @@ const auth = getAuth(app);
 const loginBox = document.getElementById("loginBox");
 const registerBox = document.getElementById("registerBox");
 const messageBox = document.getElementById("messageBox");
-
 const registerPassword = document.getElementById("registerPassword");
 
 function showMessage(text, type) {
@@ -94,10 +93,9 @@ document.getElementById("registerBtn").onclick = () => {
 
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-      sendEmailVerification(userCredential.user)
-        .then(() => {
-          showMessage("Cont creat cu succes! Verifică emailul pentru confirmare.", "success");
-        });
+      sendEmailVerification(userCredential.user).then(() => {
+        showMessage("Cont creat cu succes! Verifică emailul pentru confirmare.", "success");
+      });
     })
     .catch((error) => {
       showMessage(getFirebaseErrorMessage(error.code), "error");
