@@ -13,19 +13,27 @@ const auth = getAuth(app);
 const adminCard = document.getElementById("adminCard");
 const roleBadge = document.getElementById("roleBadge");
 
-// Roluri demo pentru o aplicatie statica: adminii pot fi adaugati aici.
-const demoAdminEmails = [
+// Roluri demo pentru o aplicatie statica: lista poate fi extinsa din Admin Panel.
+const defaultAdminEmails = [
   "xc4m0o@gmail.com",
   "admin@eazycrypt.local"
 ];
+const adminStorageKey = "eazycryptAdminEmails";
 
 function t(key, fallback) {
   return window.getTranslation ? window.getTranslation(key) : fallback;
 }
 
+function getAdminEmails() {
+  const savedEmails = JSON.parse(localStorage.getItem(adminStorageKey) || "[]");
+  const allEmails = [...defaultAdminEmails, ...savedEmails];
+
+  return [...new Set(allEmails.map((email) => email.toLowerCase()))];
+}
+
 function getUserRole(user) {
-  // In varianta demo rolul admin este acordat strict emailurilor din lista.
-  return demoAdminEmails.includes((user.email || "").toLowerCase()) ? "admin" : "user";
+  // In varianta demo rolul admin este acordat emailurilor aprobate local.
+  return getAdminEmails().includes((user.email || "").toLowerCase()) ? "admin" : "user";
 }
 
 function applyRole(role) {
