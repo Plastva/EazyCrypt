@@ -1,0 +1,38 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCLdxgHBZjHBFiD-LEM4MF0fVFx-iBb1KQ",
+  authDomain: "eazycrypt-92604.firebaseapp.com",
+  projectId: "eazycrypt-92604",
+  appId: "1:200384164661:web:a429f006ac8efd686ad27c"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const demoAdminEmails = [
+  "admin@eazycrypt.local"
+];
+
+function getUserRole(user) {
+  const savedRole = localStorage.getItem(`role:${user.email}`);
+
+  if (savedRole === "admin" || savedRole === "user") {
+    return savedRole;
+  }
+
+  return demoAdminEmails.includes((user.email || "").toLowerCase()) ? "admin" : "user";
+}
+
+onAuthStateChanged(auth, (user) => {
+  if (!user || !user.emailVerified) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  // Pagina admin este disponibila doar rolului admin.
+  if (getUserRole(user) !== "admin") {
+    window.location.href = "dashboard.html";
+  }
+});

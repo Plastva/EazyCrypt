@@ -135,6 +135,148 @@ body {
 .password-rules p.valid {
   color: #bbf7d0;
 }
+
+.security-badge {
+  margin: 16px 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(34,197,94,0.45);
+  color: #bbf7d0;
+  background: rgba(34,197,94,0.14);
+  font-weight: bold;
+}
+
+.workflow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.workflow-step {
+  min-height: 92px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.08);
+  opacity: 0.72;
+}
+
+.workflow-step span {
+  display: inline-flex;
+  width: 26px;
+  height: 26px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #e0f2fe;
+  background: rgba(59,130,246,0.25);
+  font-weight: bold;
+}
+
+.workflow-step p {
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.workflow-step.active,
+.workflow-step.done {
+  opacity: 1;
+  border-color: rgba(34,211,238,0.6);
+  background: rgba(6,182,212,0.14);
+}
+
+.workflow-step.done span {
+  background: rgba(34,197,94,0.45);
+}
+
+.drop-zone {
+  margin: 14px 0 8px;
+  padding: 24px;
+  border: 2px dashed rgba(191,219,254,0.55);
+  border-radius: 16px;
+  text-align: center;
+  background: rgba(255,255,255,0.08);
+  transition: 0.2s ease;
+}
+
+.drop-zone.drag-over {
+  border-color: #22d3ee;
+  background: rgba(34,211,238,0.16);
+}
+
+.drop-zone p {
+  margin: 0 0 6px;
+  font-weight: bold;
+}
+
+.drop-zone span,
+.selected-file {
+  color: #dbeafe;
+  font-size: 14px;
+}
+
+.selected-file {
+  margin: 8px 0 4px;
+}
+
+.password-strength {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 10px 0 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.09);
+  font-size: 14px;
+}
+
+.password-strength.weak strong {
+  color: #fecaca;
+}
+
+.password-strength.medium strong {
+  color: #fde68a;
+}
+
+.password-strength.strong strong {
+  color: #bbf7d0;
+}
+
+.security-topic {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.08);
+}
+
+.security-topic h2 {
+  margin: 0 0 8px;
+}
+
+.security-topic p {
+  margin: 0;
+  line-height: 1.55;
+}
+
+@media (max-width: 720px) {
+  .workflow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .workflow {
+    grid-template-columns: 1fr;
+  }
+
+  .navbar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+}
 .crypto-block {
   margin-top: 25px;
   padding: 22px;

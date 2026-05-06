@@ -10,7 +10,7 @@
   <div class="page">
 
     <nav class="navbar">
-      <div class="logo">🔐 EazyCrypt</div>
+      <div class="logo">EazyCrypt</div>
 
       <div class="nav-actions">
         <select id="languageSelect" class="language-select">
@@ -19,45 +19,77 @@
           <option value="ru">RU</option>
         </select>
 
-        <button onclick="window.location.href='dashboard.html'" data-i18n="back">Înapoi</button>
+        <button onclick="window.location.href='dashboard.html'" data-i18n="back">Inapoi</button>
       </div>
     </nav>
 
     <div class="crypto-card">
 
-      <h1 data-i18n="securityTitle">🛡️ Securitatea aplicației</h1>
+      <h1 data-i18n="securityTitle">Securitatea aplicatiei</h1>
 
       <p data-i18n="securityIntro">
-        Aplicația EazyCrypt utilizează tehnologii moderne pentru a asigura protecția datelor utilizatorilor.
+        Aplicatia EazyCrypt utilizeaza tehnologii moderne pentru a asigura protectia datelor utilizatorilor.
       </p>
 
-      <h2 data-i18n="authTitle">🔐 Autentificare securizată</h2>
-      <ul>
-        <li data-i18n="auth1">Autentificare prin Firebase Authentication</li>
-        <li data-i18n="auth2">Verificare cont prin email</li>
-        <li data-i18n="auth3">Protecție împotriva accesului neautorizat</li>
-      </ul>
+      <div class="security-topic">
+        <h2 data-i18n="authTitle">Autentificare securizata</h2>
+        <ul>
+          <li data-i18n="auth1">Autentificare prin Firebase Authentication</li>
+          <li data-i18n="auth2">Verificare cont prin email</li>
+          <li data-i18n="auth3">Protectie impotriva accesului neautorizat</li>
+        </ul>
+      </div>
 
-      <h2 data-i18n="aesTitle">🔑 Criptare AES</h2>
-      <ul>
-        <li data-i18n="aes1">Algoritm AES-GCM (Advanced Encryption Standard)</li>
-        <li data-i18n="aes2">Criptare realizată direct în browser</li>
-        <li data-i18n="aes3">Parola NU este stocată pe server</li>
-      </ul>
+      <div class="security-topic">
+        <h2 data-i18n="aesGcmTitle">AES-GCM</h2>
+        <p data-i18n="aesGcmExplain">
+          AES-GCM este un algoritm modern care cripteaza datele si verifica integritatea lor la decriptare.
+        </p>
+      </div>
 
-      <h2 data-i18n="dataTitle">🧠 Protecția datelor</h2>
-      <ul>
-        <li data-i18n="data1">Datele nu sunt salvate pe server</li>
-        <li data-i18n="data2">Procesarea se face local (client-side)</li>
-        <li data-i18n="data3">Fișierele criptate sunt descărcate doar de utilizator</li>
-      </ul>
+      <div class="security-topic">
+        <h2 data-i18n="pbkdf2Title">PBKDF2</h2>
+        <p data-i18n="pbkdf2Explain">
+          PBKDF2 transforma parola utilizatorului intr-o cheie criptografica prin multe iteratii SHA-256.
+        </p>
+      </div>
 
-      <h2 data-i18n="recommendTitle">⚠️ Recomandări</h2>
-      <ul>
-        <li data-i18n="rec1">Folosește parole puternice</li>
-        <li data-i18n="rec2">Nu pierde parola — datele nu pot fi recuperate</li>
-        <li data-i18n="rec3">Nu distribui fișiere criptate fără parola corectă</li>
-      </ul>
+      <div class="security-topic">
+        <h2 data-i18n="saltTitle">Salt</h2>
+        <p data-i18n="saltExplain">
+          Saltul este o valoare aleatorie folosita la derivarea cheii, astfel incat aceeasi parola sa produca rezultate diferite.
+        </p>
+      </div>
+
+      <div class="security-topic">
+        <h2 data-i18n="ivTitle">IV</h2>
+        <p data-i18n="ivExplain">
+          IV-ul este un vector de initializare aleatoriu necesar pentru ca fiecare criptare AES-GCM sa fie unica.
+        </p>
+      </div>
+
+      <div class="security-topic">
+        <h2 data-i18n="clientSideTitle">Criptare client-side</h2>
+        <p data-i18n="clientSideExplain">
+          Criptarea si decriptarea au loc in browser, iar fisierul original nu este trimis catre un server.
+        </p>
+      </div>
+
+      <div class="security-topic">
+        <h2 data-i18n="passwordStorageTitle">Parola nu este stocata</h2>
+        <p data-i18n="passwordStorageExplain">
+          Parola este folosita doar local pentru derivarea cheii si nu este salvata pe server.
+        </p>
+      </div>
+
+      <div class="security-topic">
+        <h2 data-i18n="recommendTitle">Recomandari</h2>
+        <ul>
+          <li data-i18n="rec1">Foloseste parole puternice</li>
+          <li data-i18n="rec2">Nu pierde parola - datele nu pot fi recuperate</li>
+          <li data-i18n="rec3">Nu distribui fisiere criptate fara parola corecta</li>
+        </ul>
+      </div>
 
     </div>
 

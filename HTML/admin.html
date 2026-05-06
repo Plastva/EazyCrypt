@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel - EazyCrypt</title>
+  <link rel="stylesheet" href="../CSS/dashboard.css">
+</head>
+<body>
+
+  <div class="dashboard">
+    <nav class="navbar">
+      <div class="logo">EazyCrypt</div>
+
+      <div class="nav-actions">
+        <select id="languageSelect" class="language-select">
+          <option value="ro">RO</option>
+          <option value="en">EN</option>
+          <option value="ru">RU</option>
+        </select>
+
+        <button onclick="window.location.href='dashboard.html'" data-i18n="back">Inapoi</button>
+      </div>
+    </nav>
+
+    <main class="admin-panel">
+      <h1 data-i18n="adminPanel">Admin Panel</h1>
+      <p data-i18n="adminIntro">
+        Aceasta pagina este o demonstratie simpla de acces pe baza de rol admin.
+      </p>
+
+      <ul>
+        <li data-i18n="adminItem1">Adminul poate vedea aceasta pagina separata.</li>
+        <li data-i18n="adminItem2">Utilizatorii normali sunt redirectionati catre dashboard.</li>
+        <li data-i18n="adminItem3">Rolul este pastrat local pentru compatibilitate cu GitHub Pages.</li>
+      </ul>
+    </main>
+  </div>
+
+  <script src="../JS/translations.js"></script>
+  <script type="module" src="../JS/admin.js"></script>
+</body>
+</html>

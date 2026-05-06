@@ -10,14 +10,60 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const adminCard = document.getElementById("adminCard");
+const roleBadge = document.getElementById("roleBadge");
+
+// Roluri demo pentru o aplicatie statica: adminii pot fi adaugati aici.
+const demoAdminEmails = [
+  "admin@eazycrypt.local"
+];
+
+function t(key, fallback) {
+  return window.getTranslation ? window.getTranslation(key) : fallback;
+}
+
+function getUserRole(user) {
+  const savedRole = localStorage.getItem(`role:${user.email}`);
+
+  if (savedRole === "admin" || savedRole === "user") {
+    return savedRole;
+  }
+
+  return demoAdminEmails.includes((user.email || "").toLowerCase()) ? "admin" : "user";
+}
+
+function applyRole(role) {
+  localStorage.setItem("currentRole", role);
+
+  if (roleBadge) {
+    roleBadge.textContent = `${t("currentRole", "Current role")}: ${role}`;
+  }
+
+  if (adminCard) {
+    adminCard.classList.toggle("hidden", role !== "admin");
+  }
+}
+
+window.addEventListener("languageChanged", () => {
+  const role = localStorage.getItem("currentRole");
+
+  if (role) {
+    applyRole(role);
+  }
+});
 
 onAuthStateChanged(auth, (user) => {
   if (!user || !user.emailVerified) {
     window.location.href = "login.html";
+    return;
   }
+
+  applyRole(getUserRole(user));
 });
 
 document.getElementById("logoutBtn").onclick = () => {
+  localStorage.removeItem("currentRole");
+
   signOut(auth).then(() => {
     window.location.href = "login.html";
   });

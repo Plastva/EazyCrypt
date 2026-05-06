@@ -10,7 +10,7 @@
   <div class="dashboard">
 
     <nav class="navbar">
-      <div class="logo">🔐 EazyCrypt</div>
+      <div class="logo">EazyCrypt</div>
 
       <div class="nav-actions">
         <select id="languageSelect" class="language-select">
@@ -24,28 +24,35 @@
     </nav>
 
     <section class="hero">
-      <h1 data-i18n="dashboardWelcome">Bine ai venit în EazyCrypt</h1>
-      <p data-i18n="dashboardSubtitle">Platforma ta pentru criptarea și protejarea documentelor.</p>
+      <h1 data-i18n="dashboardWelcome">Bine ai venit in EazyCrypt</h1>
+      <p data-i18n="dashboardSubtitle">Platforma ta pentru criptarea si protejarea documentelor.</p>
+      <p id="roleBadge" class="role-badge"></p>
     </section>
 
     <section class="cards">
 
       <div class="card">
-        <h3 data-i18n="textCrypto">🔒 Criptare text</h3>
-        <p data-i18n="textCryptoDesc">Criptează rapid mesaje și informații importante.</p>
-        <button onclick="window.location.href='text-crypto.html'" data-i18n="start">Începe</button>
+        <h3 data-i18n="textCrypto">Criptare text</h3>
+        <p data-i18n="textCryptoDesc">Cripteaza rapid mesaje si informatii importante.</p>
+        <button onclick="window.location.href='text-crypto.html'" data-i18n="start">Incepe</button>
       </div>
 
       <div class="card">
-        <h3 data-i18n="fileCrypto">📁 Criptare fișiere</h3>
-        <p data-i18n="fileCryptoDesc">Protejează documente prin criptare securizată.</p>
-        <button onclick="window.location.href='file-crypto.html'" data-i18n="start">Începe</button>
+        <h3 data-i18n="fileCrypto">Criptare fisiere</h3>
+        <p data-i18n="fileCryptoDesc">Protejeaza documente prin criptare securizata.</p>
+        <button onclick="window.location.href='file-crypto.html'" data-i18n="start">Incepe</button>
       </div>
 
       <div class="card">
-        <h3 data-i18n="security">🛡️ Securitate</h3>
-        <p data-i18n="securityDesc">Cont protejat prin autentificare și verificare email.</p>
+        <h3 data-i18n="security">Securitate</h3>
+        <p data-i18n="securityDesc">Cont protejat prin autentificare si verificare email.</p>
         <button onclick="window.location.href='security.html'" data-i18n="details">Detalii</button>
+      </div>
+
+      <div id="adminCard" class="card admin-card hidden">
+        <h3 data-i18n="adminPanel">Admin Panel</h3>
+        <p data-i18n="adminPanelDesc">Zona demonstrativa disponibila doar pentru rolul admin.</p>
+        <button onclick="window.location.href='admin.html'" data-i18n="openAdmin">Open admin</button>
       </div>
 
     </section>

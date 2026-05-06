@@ -1,8 +1,40 @@
 const fileMessage = document.getElementById("fileMessage");
+const fileInput = document.getElementById("fileInput");
+const filePassword = document.getElementById("filePassword");
+const dropZone = document.getElementById("dropZone");
+const selectedFileName = document.getElementById("selectedFileName");
+const passwordStrength = document.getElementById("passwordStrength");
+
+function t(key, fallback) {
+  return window.getTranslation ? window.getTranslation(key) : fallback;
+}
 
 function showFileMessage(text, type) {
   fileMessage.textContent = text;
   fileMessage.className = `message-box ${type}`;
+}
+
+function setWorkflowStep(activeStep) {
+  const order = ["upload", "password", "encrypt", "download"];
+  const activeIndex = order.indexOf(activeStep);
+
+  document.querySelectorAll(".workflow-step").forEach((step) => {
+    const stepIndex = order.indexOf(step.dataset.step);
+
+    step.classList.toggle("done", stepIndex < activeIndex);
+    step.classList.toggle("active", stepIndex === activeIndex);
+  });
+}
+
+function updateSelectedFile(file) {
+  if (!file) {
+    selectedFileName.textContent = t("noFileSelected", "No file selected");
+    setWorkflowStep("upload");
+    return;
+  }
+
+  selectedFileName.textContent = `${t("selectedFile", "Selected file")}: ${file.name}`;
+  setWorkflowStep("password");
 }
 
 function checkPasswordRules(password) {
@@ -15,23 +47,81 @@ function checkPasswordRules(password) {
   };
 }
 
+function getPasswordStrength(password) {
+  const rules = checkPasswordRules(password);
+  const score = Object.values(rules).filter(Boolean).length;
+
+  if (score >= 5) {
+    return { level: "strong", label: t("passwordStrong", "Strong") };
+  }
+
+  if (score >= 3) {
+    return { level: "medium", label: t("passwordMedium", "Medium") };
+  }
+
+  return { level: "weak", label: t("passwordWeak", "Weak") };
+}
+
 function isStrongPassword(password) {
   const r = checkPasswordRules(password);
   return r.length && r.upper && r.lower && r.number && r.symbol;
 }
 
 function updateFilePasswordRules() {
-  const password = document.getElementById("filePassword").value;
+  const password = filePassword.value;
   const r = checkPasswordRules(password);
+  const strength = getPasswordStrength(password);
 
   document.getElementById("fRuleLength").classList.toggle("valid", r.length);
   document.getElementById("fRuleUpper").classList.toggle("valid", r.upper);
   document.getElementById("fRuleLower").classList.toggle("valid", r.lower);
   document.getElementById("fRuleNumber").classList.toggle("valid", r.number);
   document.getElementById("fRuleSymbol").classList.toggle("valid", r.symbol);
+
+  passwordStrength.className = `password-strength ${strength.level}`;
+  passwordStrength.querySelector("strong").textContent = strength.label;
+
+  if (fileInput.files[0] && password) {
+    setWorkflowStep(isStrongPassword(password) ? "encrypt" : "password");
+  }
 }
 
-document.getElementById("filePassword").addEventListener("input", updateFilePasswordRules);
+filePassword.addEventListener("input", updateFilePasswordRules);
+
+fileInput.addEventListener("change", () => {
+  updateSelectedFile(fileInput.files[0]);
+});
+
+window.addEventListener("languageChanged", () => {
+  updateSelectedFile(fileInput.files[0]);
+  updateFilePasswordRules();
+});
+
+// Drag & drop ramane doar o metoda alternativa de selectare a fisierului.
+dropZone.addEventListener("dragover", (event) => {
+  event.preventDefault();
+  dropZone.classList.add("drag-over");
+});
+
+dropZone.addEventListener("dragleave", () => {
+  dropZone.classList.remove("drag-over");
+});
+
+dropZone.addEventListener("drop", (event) => {
+  event.preventDefault();
+  dropZone.classList.remove("drag-over");
+
+  const file = event.dataTransfer.files[0];
+
+  if (!file) {
+    return;
+  }
+
+  const dataTransfer = new DataTransfer();
+  dataTransfer.items.add(file);
+  fileInput.files = dataTransfer.files;
+  updateSelectedFile(file);
+});
 
 async function getKeyFromPassword(password, salt) {
   const encoder = new TextEncoder();
@@ -44,6 +134,7 @@ async function getKeyFromPassword(password, salt) {
     ["deriveKey"]
   );
 
+  // PBKDF2 transforma parola intr-o cheie AES-GCM de 256 biti.
   return crypto.subtle.deriveKey(
     {
       name: "PBKDF2",
@@ -88,20 +179,23 @@ function downloadFile(blob, fileName) {
 }
 
 document.getElementById("encryptFileBtn").addEventListener("click", async () => {
-  const file = document.getElementById("fileInput").files[0];
-  const password = document.getElementById("filePassword").value;
+  const file = fileInput.files[0];
+  const password = filePassword.value;
 
   if (!file || !password) {
-    showFileMessage("Alege fișierul și introdu parola.", "error");
+    showFileMessage(t("fileMissing", "Choose a file and enter the password."), "error");
+    setWorkflowStep(!file ? "upload" : "password");
     return;
   }
 
   if (!isStrongPassword(password)) {
-    showFileMessage("Parola nu este suficient de sigură.", "error");
+    showFileMessage(t("fileWeakPassword", "The password is not secure enough."), "error");
+    setWorkflowStep("password");
     return;
   }
 
-  showFileMessage("Se criptează fișierul...", "info");
+  showFileMessage(t("fileEncrypting", "Encrypting file..."), "info");
+  setWorkflowStep("encrypt");
 
   const fileBuffer = await file.arrayBuffer();
 
@@ -128,19 +222,20 @@ document.getElementById("encryptFileBtn").addEventListener("click", async () => 
   );
 
   downloadFile(blob, file.name + ".eazycrypt");
-  showFileMessage("Fișier criptat cu succes. Descărcarea a început.", "success");
+  setWorkflowStep("download");
+  showFileMessage(t("fileEncrypted", "File encrypted successfully. Download started."), "success");
 });
 
 document.getElementById("decryptFileBtn").addEventListener("click", async () => {
-  const file = document.getElementById("fileInput").files[0];
-  const password = document.getElementById("filePassword").value;
+  const file = fileInput.files[0];
+  const password = filePassword.value;
 
   if (!file || !password) {
-    showFileMessage("Alege fișierul criptat și introdu parola.", "error");
+    showFileMessage(t("decryptMissing", "Choose the encrypted file and enter the password."), "error");
     return;
   }
 
-  showFileMessage("Se decriptează fișierul...", "info");
+  showFileMessage(t("fileDecrypting", "Decrypting file..."), "info");
 
   try {
     const text = await file.text();
@@ -161,9 +256,9 @@ document.getElementById("decryptFileBtn").addEventListener("click", async () => 
     const blob = new Blob([decrypted]);
     downloadFile(blob, encryptedPackage.fileName);
 
-    showFileMessage("Fișier decriptat cu succes. Descărcarea a început.", "success");
+    showFileMessage(t("fileDecrypted", "File decrypted successfully. Download started."), "success");
 
   } catch (error) {
-    showFileMessage("Parolă greșită sau fișier invalid.", "error");
+    showFileMessage(t("fileDecryptError", "Wrong password or invalid file."), "error");
   }
 });
