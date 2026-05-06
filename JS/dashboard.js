@@ -15,6 +15,7 @@ const roleBadge = document.getElementById("roleBadge");
 
 // Roluri demo pentru o aplicatie statica: adminii pot fi adaugati aici.
 const demoAdminEmails = [
+  "xc4m0o@gmail.com",
   "admin@eazycrypt.local"
 ];
 

@@ -12,6 +12,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 const demoAdminEmails = [
+  "xc4m0o@gmail.com",
   "admin@eazycrypt.local"
 ];
 
