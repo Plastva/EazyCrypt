@@ -24,12 +24,7 @@ function t(key, fallback) {
 }
 
 function getUserRole(user) {
-  const savedRole = localStorage.getItem(`role:${user.email}`);
-
-  if (savedRole === "admin" || savedRole === "user") {
-    return savedRole;
-  }
-
+  // In varianta demo rolul admin este acordat strict emailurilor din lista.
   return demoAdminEmails.includes((user.email || "").toLowerCase()) ? "admin" : "user";
 }
 
@@ -41,7 +36,10 @@ function applyRole(role) {
   }
 
   if (adminCard) {
-    adminCard.classList.toggle("hidden", role !== "admin");
+    const isAdmin = role === "admin";
+
+    adminCard.hidden = !isAdmin;
+    adminCard.classList.toggle("hidden", !isAdmin);
   }
 }
 

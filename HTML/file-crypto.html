@@ -52,22 +52,28 @@
         </div>
       </div>
 
-      <div id="dropZone" class="drop-zone">
-        <p data-i18n="dropFile">Drag & drop file here</p>
-        <span data-i18n="orChooseFile">or choose a file below</span>
-      </div>
+      <div class="file-control-panel">
+        <div id="dropZone" class="drop-zone">
+          <p data-i18n="dropFile">Drag & drop file here</p>
+          <span data-i18n="orChooseFile">or choose a file below</span>
+        </div>
 
-      <p id="selectedFileName" class="selected-file" data-i18n="noFileSelected">No file selected</p>
+        <p id="selectedFileName" class="selected-file" data-i18n="noFileSelected">No file selected</p>
 
-      <input type="file" id="fileInput">
-      <input type="password" id="filePassword" data-i18n-placeholder="password" placeholder="Parola">
+        <label class="file-picker">
+          <span data-i18n="chooseFile">Choose file</span>
+          <input type="file" id="fileInput">
+        </label>
 
-      <div class="password-rules">
-        <p id="fRuleLength" data-i18n="ruleLength">- Minim 8 caractere</p>
-        <p id="fRuleUpper" data-i18n="ruleUpper">- O litera mare</p>
-        <p id="fRuleLower" data-i18n="ruleLower">- O litera mica</p>
-        <p id="fRuleNumber" data-i18n="ruleNumber">- O cifra</p>
-        <p id="fRuleSymbol" data-i18n="ruleSymbol">- Un simbol</p>
+        <input type="password" id="filePassword" data-i18n-placeholder="password" placeholder="Parola">
+
+        <div class="password-rules compact-rules">
+          <p id="fRuleLength" data-i18n="ruleLength">- Minim 8 caractere</p>
+          <p id="fRuleUpper" data-i18n="ruleUpper">- O litera mare</p>
+          <p id="fRuleLower" data-i18n="ruleLower">- O litera mica</p>
+          <p id="fRuleNumber" data-i18n="ruleNumber">- O cifra</p>
+          <p id="fRuleSymbol" data-i18n="ruleSymbol">- Un simbol</p>
+        </div>
       </div>
 
       <div id="passwordStrength" class="password-strength weak">
@@ -75,8 +81,10 @@
         <strong data-i18n="passwordWeak">Weak</strong>
       </div>
 
-      <button id="encryptFileBtn" data-i18n="encryptFile">Cripteaza fisier</button>
-      <button id="decryptFileBtn" data-i18n="decryptFile">Decripteaza fisier</button>
+      <div class="file-actions">
+        <button id="encryptFileBtn" data-i18n="encryptFile">Cripteaza fisier</button>
+        <button id="decryptFileBtn" data-i18n="decryptFile">Decripteaza fisier</button>
+      </div>
 
       <p class="small-text" data-i18n="fileNote">
         Fisierul criptat va fi descarcat automat cu extensia .eazycrypt.

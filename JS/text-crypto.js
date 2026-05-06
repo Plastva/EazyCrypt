@@ -1,11 +1,30 @@
 const textMessage = document.getElementById("textMessage");
+const plainText = document.getElementById("plainText");
+const textPassword = document.getElementById("textPassword");
+const encryptedText = document.getElementById("encryptedText");
+const decryptedText = document.getElementById("decryptedText");
+const textPasswordStrength = document.getElementById("textPasswordStrength");
+
+function t(key, fallback) {
+  return window.getTranslation ? window.getTranslation(key) : fallback;
+}
 
 function showTextMessage(text, type) {
   textMessage.textContent = text;
   textMessage.className = `message-box ${type}`;
 }
 
-/* PASSWORD RULES */
+function setTextWorkflowStep(activeStep) {
+  const order = ["text", "password", "encrypt", "result"];
+  const activeIndex = order.indexOf(activeStep);
+
+  document.querySelectorAll(".workflow-step").forEach((step) => {
+    const stepIndex = order.indexOf(step.dataset.step);
+
+    step.classList.toggle("done", stepIndex < activeIndex);
+    step.classList.toggle("active", stepIndex === activeIndex);
+  });
+}
 
 function checkPasswordRules(password) {
   return {
@@ -17,23 +36,70 @@ function checkPasswordRules(password) {
   };
 }
 
+function getPasswordStrength(password) {
+  const rules = checkPasswordRules(password);
+  const score = Object.values(rules).filter(Boolean).length;
+
+  if (score >= 5) {
+    return { level: "strong", label: t("passwordStrong", "Strong") };
+  }
+
+  if (score >= 3) {
+    return { level: "medium", label: t("passwordMedium", "Medium") };
+  }
+
+  return { level: "weak", label: t("passwordWeak", "Weak") };
+}
+
 function isStrongPassword(password) {
   const r = checkPasswordRules(password);
   return r.length && r.upper && r.lower && r.number && r.symbol;
 }
 
-document.getElementById("textPassword").addEventListener("input", () => {
-  const password = document.getElementById("textPassword").value;
+function updateTextPasswordRules() {
+  const password = textPassword.value;
   const r = checkPasswordRules(password);
+  const strength = getPasswordStrength(password);
 
   document.getElementById("tRuleLength").classList.toggle("valid", r.length);
   document.getElementById("tRuleUpper").classList.toggle("valid", r.upper);
   document.getElementById("tRuleLower").classList.toggle("valid", r.lower);
   document.getElementById("tRuleNumber").classList.toggle("valid", r.number);
   document.getElementById("tRuleSymbol").classList.toggle("valid", r.symbol);
+
+  textPasswordStrength.className = `password-strength ${strength.level}`;
+  textPasswordStrength.querySelector("strong").textContent = strength.label;
+
+  if (!plainText.value.trim() && !encryptedText.value.trim()) {
+    setTextWorkflowStep("text");
+    return;
+  }
+
+  if (!password || !isStrongPassword(password)) {
+    setTextWorkflowStep("password");
+    return;
+  }
+
+  setTextWorkflowStep(encryptedText.value.trim() ? "result" : "encrypt");
+}
+
+plainText.addEventListener("input", () => {
+  if (plainText.value.trim()) {
+    setTextWorkflowStep(textPassword.value ? "password" : "text");
+  } else {
+    setTextWorkflowStep("text");
+  }
 });
 
-/* CRYPTO */
+textPassword.addEventListener("input", updateTextPasswordRules);
+
+encryptedText.addEventListener("input", () => {
+  if (encryptedText.value.trim()) {
+    setTextWorkflowStep("result");
+  }
+});
+
+window.addEventListener("languageChanged", updateTextPasswordRules);
 
 async function getKeyFromPassword(password, salt) {
   const encoder = new TextEncoder();
@@ -46,6 +112,7 @@ async function getKeyFromPassword(password, salt) {
     ["deriveKey"]
   );
 
+  // PBKDF2 transforma parola intr-o cheie AES-GCM de 256 biti.
   return crypto.subtle.deriveKey(
     {
       name: "PBKDF2",
@@ -78,23 +145,24 @@ function base64ToBuffer(base64) {
   return bytes.buffer;
 }
 
-/* ENCRYPT */
-
 document.getElementById("encryptTextBtn").addEventListener("click", async () => {
-  const text = document.getElementById("plainText").value;
-  const password = document.getElementById("textPassword").value;
+  const text = plainText.value;
+  const password = textPassword.value;
 
   if (!text || !password) {
-    showTextMessage("Completează textul și parola.", "error");
+    showTextMessage(t("textMissing", "Complete the text and password."), "error");
+    setTextWorkflowStep(!text ? "text" : "password");
     return;
   }
 
   if (!isStrongPassword(password)) {
-    showTextMessage("Parola nu este suficient de sigură.", "error");
+    showTextMessage(t("textWeakPassword", "The password is not secure enough."), "error");
+    setTextWorkflowStep("password");
     return;
   }
 
-  showTextMessage("Se criptează...", "info");
+  showTextMessage(t("textEncrypting", "Encrypting text..."), "info");
+  setTextWorkflowStep("encrypt");
 
   const encoder = new TextEncoder();
   const salt = crypto.getRandomValues(new Uint8Array(16));
@@ -113,25 +181,24 @@ document.getElementById("encryptTextBtn").addEventListener("click", async () => 
     data: bufferToBase64(encrypted)
   };
 
-  document.getElementById("encryptedText").value = JSON.stringify(result);
-  showTextMessage("Text criptat cu succes.", "success");
+  encryptedText.value = JSON.stringify(result);
+  setTextWorkflowStep("result");
+  showTextMessage(t("textEncrypted", "Text encrypted successfully."), "success");
 });
 
-/* DECRYPT */
-
 document.getElementById("decryptTextBtn").addEventListener("click", async () => {
-  const encryptedText = document.getElementById("encryptedText").value;
-  const password = document.getElementById("textPassword").value;
+  const text = encryptedText.value;
+  const password = textPassword.value;
 
-  if (!encryptedText || !password) {
-    showTextMessage("Introdu textul criptat și parola.", "error");
+  if (!text || !password) {
+    showTextMessage(t("textDecryptMissing", "Enter encrypted text and password."), "error");
     return;
   }
 
-  showTextMessage("Se decriptează...", "info");
+  showTextMessage(t("textDecrypting", "Decrypting text..."), "info");
 
   try {
-    const encryptedObject = JSON.parse(encryptedText);
+    const encryptedObject = JSON.parse(text);
 
     const salt = base64ToBuffer(encryptedObject.salt);
     const iv = base64ToBuffer(encryptedObject.iv);
@@ -146,43 +213,42 @@ document.getElementById("decryptTextBtn").addEventListener("click", async () => 
     );
 
     const decoder = new TextDecoder();
-    document.getElementById("decryptedText").value = decoder.decode(decrypted);
+    decryptedText.value = decoder.decode(decrypted);
 
-    showTextMessage("Text decriptat cu succes.", "success");
+    setTextWorkflowStep("result");
+    showTextMessage(t("textDecrypted", "Text decrypted successfully."), "success");
 
   } catch {
-    showTextMessage("Parolă greșită sau text invalid.", "error");
+    showTextMessage(t("textDecryptError", "Wrong password or invalid text."), "error");
   }
 });
 
-/* COPY */
-
 document.getElementById("copyTextBtn").addEventListener("click", async () => {
-  const text = document.getElementById("encryptedText").value;
+  const text = encryptedText.value;
 
   if (!text) {
-    showTextMessage("Nu există text de copiat.", "error");
+    showTextMessage(t("copyMissing", "There is no text to copy."), "error");
     return;
   }
 
   await navigator.clipboard.writeText(text);
 
   const btn = document.getElementById("copyTextBtn");
-  btn.textContent = "✔";
+  btn.textContent = t("copied", "Copied");
 
   setTimeout(() => {
-    btn.textContent = "Copiază";
+    btn.textContent = t("copyText", "Copy");
   }, 1000);
 
-  showTextMessage("Text copiat.", "success");
+  showTextMessage(t("textCopied", "Text copied."), "success");
 });
 
-/* CLEAR */
-
 document.getElementById("clearTextBtn").addEventListener("click", () => {
-  document.getElementById("plainText").value = "";
-  document.getElementById("encryptedText").value = "";
-  document.getElementById("decryptedText").value = "";
+  plainText.value = "";
+  encryptedText.value = "";
+  decryptedText.value = "";
 
-  showTextMessage("Câmpurile au fost curățate.", "info");
+  setTextWorkflowStep("text");
+  updateTextPasswordRules();
+  showTextMessage(t("fieldsCleared", "Fields were cleared."), "info");
 });

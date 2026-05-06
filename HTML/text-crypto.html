@@ -10,7 +10,7 @@
   <div class="page">
 
     <nav class="navbar">
-      <div class="logo">🔐 EazyCrypt</div>
+      <div class="logo">EazyCrypt</div>
 
       <div class="nav-actions">
         <select id="languageSelect" class="language-select">
@@ -19,57 +19,98 @@
           <option value="ru">RU</option>
         </select>
 
-        <button onclick="window.location.href='dashboard.html'">Înapoi</button>
+        <button onclick="window.location.href='dashboard.html'" data-i18n="back">Inapoi</button>
       </div>
     </nav>
 
     <div class="crypto-card">
-      <h1>🔒 Criptare text</h1>
-      <p>Introdu textul, parola și criptează informația.</p>
+      <h1 data-i18n="textCrypto">Criptare text</h1>
+      <p data-i18n="textPageDesc">Introdu textul, parola si cripteaza informatia.</p>
 
       <div id="textMessage" class="message-box hidden"></div>
 
-      <div class="crypto-block">
-        <h2>1. Criptare</h2>
+      <div class="security-badge" data-i18n="secureEncryption">
+        Secure encryption: AES-GCM 256-bit
+      </div>
 
-        <textarea id="plainText" placeholder="Scrie textul normal aici..."></textarea>
-
-        <input type="password" id="textPassword" placeholder="Parolă">
-
-        <div class="password-rules">
-          <p id="tRuleLength">• Minim 8 caractere</p>
-          <p id="tRuleUpper">• O literă mare</p>
-          <p id="tRuleLower">• O literă mică</p>
-          <p id="tRuleNumber">• O cifră</p>
-          <p id="tRuleSymbol">• Un simbol</p>
+      <div class="workflow" aria-label="Text encryption workflow">
+        <div class="workflow-step active" data-step="text">
+          <span>1</span>
+          <p data-i18n="textWorkflowText">Write text</p>
         </div>
-
-        <button id="encryptTextBtn">Criptează</button>
-
-        <textarea id="encryptedText" placeholder="Textul criptat apare aici..."></textarea>
-
-        <div class="action-row">
-          <button id="copyTextBtn" class="mini-btn">Copiază</button>
-          <button id="clearTextBtn" class="mini-btn">Șterge</button>
+        <div class="workflow-step" data-step="password">
+          <span>2</span>
+          <p data-i18n="workflowPassword">Password validation</p>
+        </div>
+        <div class="workflow-step" data-step="encrypt">
+          <span>3</span>
+          <p data-i18n="workflowEncrypt">Encrypt</p>
+        </div>
+        <div class="workflow-step" data-step="result">
+          <span>4</span>
+          <p data-i18n="textWorkflowResult">Copy or decrypt</p>
         </div>
       </div>
 
-      <div class="crypto-block">
-        <h2>2. Decriptare</h2>
+      <div class="text-grid">
+        <section class="crypto-block text-panel">
+          <div class="block-header">
+            <h2 data-i18n="encryptSection">1. Criptare</h2>
+            <span data-i18n="inputData">Date initiale</span>
+          </div>
 
-        <p class="hint-text">
-          🔽 Lipește textul criptat mai sus și apasă Decriptează
-        </p>
+          <label class="field-label" for="plainText" data-i18n="plainTextLabel">Text normal</label>
+          <textarea id="plainText" data-i18n-placeholder="plainText" placeholder="Scrie textul aici..."></textarea>
 
-        <button id="decryptTextBtn">Decriptează</button>
+          <label class="field-label" for="textPassword" data-i18n="passwordLabel">Parola pentru criptare</label>
+          <input type="password" id="textPassword" data-i18n-placeholder="password" placeholder="Parola">
 
-        <textarea id="decryptedText" placeholder="Rezultatul apare aici..." readonly></textarea>
+          <div class="password-rules compact-rules">
+            <p id="tRuleLength" data-i18n="ruleLength">- Minim 8 caractere</p>
+            <p id="tRuleUpper" data-i18n="ruleUpper">- O litera mare</p>
+            <p id="tRuleLower" data-i18n="ruleLower">- O litera mica</p>
+            <p id="tRuleNumber" data-i18n="ruleNumber">- O cifra</p>
+            <p id="tRuleSymbol" data-i18n="ruleSymbol">- Un simbol</p>
+          </div>
+
+          <div id="textPasswordStrength" class="password-strength weak">
+            <span data-i18n="passwordStrength">Puterea parolei:</span>
+            <strong data-i18n="passwordWeak">Slaba</strong>
+          </div>
+
+          <button id="encryptTextBtn" data-i18n="encrypt">Cripteaza</button>
+        </section>
+
+        <section class="crypto-block text-panel">
+          <div class="block-header">
+            <h2 data-i18n="resultSection">2. Rezultat</h2>
+            <span data-i18n="encryptedOutput">Text securizat</span>
+          </div>
+
+          <label class="field-label" for="encryptedText" data-i18n="encryptedTextLabel">Text criptat</label>
+          <textarea id="encryptedText" data-i18n-placeholder="encryptedText" placeholder="Text criptat..."></textarea>
+
+          <div class="action-row">
+            <button id="copyTextBtn" class="mini-btn" data-i18n="copyText">Copiaza</button>
+            <button id="clearTextBtn" class="mini-btn" data-i18n="clearText">Sterge</button>
+          </div>
+
+          <p class="hint-text" data-i18n="decryptHint">
+            Lipeste textul criptat in casuta de mai sus, foloseste aceeasi parola si apasa Decripteaza.
+          </p>
+
+          <button id="decryptTextBtn" data-i18n="decrypt">Decripteaza</button>
+
+          <label class="field-label" for="decryptedText" data-i18n="decryptedTextLabel">Text decriptat</label>
+          <textarea id="decryptedText" data-i18n-placeholder="decryptedText" placeholder="Text decriptat..." readonly></textarea>
+        </section>
       </div>
 
     </div>
 
   </div>
 
+  <script src="../JS/translations.js"></script>
   <script type="module" src="../JS/text-crypto.js"></script>
 </body>
 </html>

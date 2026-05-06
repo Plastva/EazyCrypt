@@ -136,8 +136,9 @@ body {
   line-height: 1.55;
 }
 
-.hidden {
-  display: none;
+.hidden,
+[hidden] {
+  display: none !important;
 }
 .nav-actions {
   display: flex;

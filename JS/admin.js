@@ -17,12 +17,7 @@ const demoAdminEmails = [
 ];
 
 function getUserRole(user) {
-  const savedRole = localStorage.getItem(`role:${user.email}`);
-
-  if (savedRole === "admin" || savedRole === "user") {
-    return savedRole;
-  }
-
+  // Aceeasi regula simpla ca in dashboard: admin doar pentru emailurile aprobate.
   return demoAdminEmails.includes((user.email || "").toLowerCase()) ? "admin" : "user";
 }
 
