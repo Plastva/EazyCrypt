@@ -1,9 +1,21 @@
+import {
+  waitForAuth,
+  getSavedAuthSession,
+  getUserProfile,
+  logActivity,
+  logShare
+} from "./firebase-service.js";
+
 const textMessage = document.getElementById("textMessage");
 const plainText = document.getElementById("plainText");
 const textPassword = document.getElementById("textPassword");
 const encryptedText = document.getElementById("encryptedText");
 const decryptedText = document.getElementById("decryptedText");
 const textPasswordStrength = document.getElementById("textPasswordStrength");
+const textSharePanel = document.getElementById("textSharePanel");
+
+let currentUser = null;
+let currentProfile = { role: "guest" };
 
 function t(key, fallback) {
   return window.getTranslation ? window.getTranslation(key) : fallback;
@@ -12,6 +24,19 @@ function t(key, fallback) {
 function showTextMessage(text, type) {
   textMessage.textContent = text;
   textMessage.className = `message-box ${type}`;
+}
+
+function setSharePanelVisible(visible) {
+  const canShare = currentUser && currentProfile.role !== "guest";
+  textSharePanel?.classList.toggle("hidden", !(visible && canShare));
+}
+
+async function safeLogActivity(metadata) {
+  try {
+    await logActivity(currentUser, metadata);
+  } catch (error) {
+    console.warn("Activity metadata could not be saved.", error);
+  }
 }
 
 function setTextWorkflowStep(activeStep) {
@@ -96,6 +121,9 @@ textPassword.addEventListener("input", updateTextPasswordRules);
 encryptedText.addEventListener("input", () => {
   if (encryptedText.value.trim()) {
     setTextWorkflowStep("result");
+    setSharePanelVisible(true);
+  } else {
+    setSharePanelVisible(false);
   }
 });
 
@@ -183,7 +211,13 @@ document.getElementById("encryptTextBtn").addEventListener("click", async () => 
 
   encryptedText.value = JSON.stringify(result);
   setTextWorkflowStep("result");
+  setSharePanelVisible(true);
   showTextMessage(t("textEncrypted", "Text encrypted successfully."), "success");
+  await safeLogActivity({
+    actionType: "encrypt",
+    targetType: "text",
+    status: "success"
+  });
 });
 
 document.getElementById("decryptTextBtn").addEventListener("click", async () => {
@@ -217,9 +251,19 @@ document.getElementById("decryptTextBtn").addEventListener("click", async () => 
 
     setTextWorkflowStep("result");
     showTextMessage(t("textDecrypted", "Text decrypted successfully."), "success");
+    await safeLogActivity({
+      actionType: "decrypt",
+      targetType: "text",
+      status: "success"
+    });
 
   } catch {
     showTextMessage(t("textDecryptError", "Wrong password or invalid text."), "error");
+    await safeLogActivity({
+      actionType: "decrypt",
+      targetType: "text",
+      status: "error"
+    });
   }
 });
 
@@ -243,12 +287,65 @@ document.getElementById("copyTextBtn").addEventListener("click", async () => {
   showTextMessage(t("textCopied", "Text copied."), "success");
 });
 
+document.getElementById("downloadTextBtn")?.addEventListener("click", () => {
+  const text = encryptedText.value;
+
+  if (!text) {
+    showTextMessage("Nu exista text criptat de descarcat.", "error");
+    return;
+  }
+
+  const blob = new Blob([text], { type: "application/json" });
+  const link = document.createElement("a");
+
+  link.href = URL.createObjectURL(blob);
+  link.download = "text.eazycrypt";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(link.href);
+
+  showTextMessage("Textul criptat a fost descarcat.", "success");
+});
+
 document.getElementById("clearTextBtn").addEventListener("click", () => {
   plainText.value = "";
   encryptedText.value = "";
   decryptedText.value = "";
+  setSharePanelVisible(false);
 
   setTextWorkflowStep("text");
   updateTextPasswordRules();
   showTextMessage(t("fieldsCleared", "Fields were cleared."), "info");
 });
+
+document.getElementById("shareTextBtn")?.addEventListener("click", async () => {
+  const result = encryptedText.value.trim();
+
+  if (!result) {
+    showTextMessage("Nu exista rezultat criptat de partajat.", "error");
+    return;
+  }
+
+  const subject = encodeURIComponent("EazyCrypt - text criptat");
+  const body = encodeURIComponent(
+    `Rezultat criptat EazyCrypt:\n\n${result}\n\nParola NU este inclusa. Trimite parola separat printr-un canal sigur.`
+  );
+
+  window.location.href = `mailto:?subject=${subject}&body=${body}`;
+
+  try {
+    await logShare(currentUser, {
+      targetType: "text",
+      status: "prepared",
+      method: "mailto"
+    });
+  } catch (error) {
+    console.warn("Share metadata could not be saved.", error);
+  }
+});
+
+const authUser = await waitForAuth();
+currentUser = authUser?.emailVerified ? authUser : getSavedAuthSession();
+currentProfile = currentUser ? await getUserProfile(currentUser) : { role: "guest" };
+setSharePanelVisible(Boolean(encryptedText.value.trim()));

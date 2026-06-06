@@ -1,9 +1,25 @@
+import {
+  waitForAuth,
+  getSavedAuthSession,
+  getUserProfile,
+  logActivity,
+  logShare
+} from "./firebase-service.js";
+
 const fileMessage = document.getElementById("fileMessage");
 const fileInput = document.getElementById("fileInput");
 const filePassword = document.getElementById("filePassword");
 const dropZone = document.getElementById("dropZone");
 const selectedFileName = document.getElementById("selectedFileName");
 const passwordStrength = document.getElementById("passwordStrength");
+const fileSharePanel = document.getElementById("fileSharePanel");
+
+let currentUser = null;
+let currentProfile = { role: "guest" };
+let lastEncryptedFileName = "";
+let lastEncryptedBlob = null;
+let lastEncryptedShareFile = null;
+let lastEncryptedPayload = "";
 
 function t(key, fallback) {
   return window.getTranslation ? window.getTranslation(key) : fallback;
@@ -12,6 +28,19 @@ function t(key, fallback) {
 function showFileMessage(text, type) {
   fileMessage.textContent = text;
   fileMessage.className = `message-box ${type}`;
+}
+
+function setSharePanelVisible(visible) {
+  const canShare = currentUser && currentProfile.role !== "guest";
+  fileSharePanel?.classList.toggle("hidden", !(visible && canShare));
+}
+
+async function safeLogActivity(metadata) {
+  try {
+    await logActivity(currentUser, metadata);
+  } catch (error) {
+    console.warn("Activity metadata could not be saved.", error);
+  }
 }
 
 function setWorkflowStep(activeStep) {
@@ -30,10 +59,16 @@ function updateSelectedFile(file) {
   if (!file) {
     selectedFileName.textContent = t("noFileSelected", "No file selected");
     setWorkflowStep("upload");
+    setSharePanelVisible(false);
     return;
   }
 
   selectedFileName.textContent = `${t("selectedFile", "Selected file")}: ${file.name}`;
+  lastEncryptedFileName = "";
+  lastEncryptedBlob = null;
+  lastEncryptedShareFile = null;
+  lastEncryptedPayload = "";
+  setSharePanelVisible(false);
   setWorkflowStep("password");
 }
 
@@ -216,14 +251,27 @@ document.getElementById("encryptFileBtn").addEventListener("click", async () => 
     data: bufferToBase64(encrypted)
   };
 
+  lastEncryptedPayload = JSON.stringify(encryptedPackage);
+
   const blob = new Blob(
-    [JSON.stringify(encryptedPackage)],
+    [lastEncryptedPayload],
     { type: "application/json" }
   );
 
   downloadFile(blob, file.name + ".eazycrypt");
+  lastEncryptedFileName = file.name + ".eazycrypt";
+  lastEncryptedBlob = blob;
+  lastEncryptedShareFile = new File([blob], lastEncryptedFileName, { type: "application/json" });
   setWorkflowStep("download");
+  setSharePanelVisible(true);
   showFileMessage(t("fileEncrypted", "File encrypted successfully. Download started."), "success");
+  await safeLogActivity({
+    actionType: "encrypt",
+    targetType: "file",
+    fileName: file.name,
+    fileSize: file.size,
+    status: "success"
+  });
 });
 
 document.getElementById("decryptFileBtn").addEventListener("click", async () => {
@@ -257,8 +305,97 @@ document.getElementById("decryptFileBtn").addEventListener("click", async () => 
     downloadFile(blob, encryptedPackage.fileName);
 
     showFileMessage(t("fileDecrypted", "File decrypted successfully. Download started."), "success");
+    await safeLogActivity({
+      actionType: "decrypt",
+      targetType: "file",
+      fileName: encryptedPackage.fileName || file.name,
+      fileSize: file.size,
+      status: "success"
+    });
 
   } catch (error) {
     showFileMessage(t("fileDecryptError", "Wrong password or invalid file."), "error");
+    await safeLogActivity({
+      actionType: "decrypt",
+      targetType: "file",
+      fileName: file.name,
+      fileSize: file.size,
+      status: "error"
+    });
   }
 });
+
+document.getElementById("shareFileBtn")?.addEventListener("click", async () => {
+  const encryptedName = lastEncryptedFileName || `${fileInput.files[0]?.name || "document"}.eazycrypt`;
+  const shareText = `Fisier criptat EazyCrypt: ${encryptedName}. Parola NU este inclusa si trebuie transmisa separat.`;
+
+  if (!lastEncryptedBlob || !lastEncryptedShareFile || !lastEncryptedPayload) {
+    showFileMessage("Cripteaza mai intai fisierul pentru a pregati partajarea.", "error");
+    return;
+  }
+
+  const canEmbedEncryptedPayload = lastEncryptedPayload.length <= 12000;
+  const mailBody = canEmbedEncryptedPayload
+    ? `${shareText}\n\nContinut criptat EazyCrypt:\n\n${lastEncryptedPayload}\n\nParola NU este inclusa. Trimite parola separat printr-un canal sigur.`
+    : `${shareText}\n\nFisierul criptat este prea mare pentru a fi pus direct in email. Ataseaza fisierul .eazycrypt descarcat automat. Parola NU este inclusa si trebuie transmisa separat printr-un canal sigur.`;
+
+  try {
+    await navigator.clipboard.writeText(mailBody);
+  } catch (error) {
+    console.warn("Could not copy share message.", error);
+  }
+
+  if (navigator.canShare?.({ files: [lastEncryptedShareFile] })) {
+    try {
+      await navigator.share({
+        title: "EazyCrypt - fisier criptat",
+        text: shareText,
+        files: [lastEncryptedShareFile]
+      });
+
+      showFileMessage("Fisierul criptat a fost pregatit pentru partajare.", "success");
+
+      await logShare(currentUser, {
+        targetType: "file",
+        fileName: encryptedName,
+        status: "shared",
+        method: "web-share"
+      });
+      return;
+    } catch (error) {
+      if (error.name === "AbortError") {
+        showFileMessage("Partajarea a fost anulata. Mesajul de partajare a fost copiat in clipboard.", "info");
+        return;
+      }
+
+      console.warn("Web Share API failed, using mailto fallback.", error);
+    }
+  }
+
+  const subject = encodeURIComponent("EazyCrypt - fisier criptat");
+  const body = encodeURIComponent(mailBody);
+
+  window.open(`mailto:?subject=${subject}&body=${body}`, "_self");
+  showFileMessage(
+    canEmbedEncryptedPayload
+      ? "Emailul a fost pregatit si mesajul a fost copiat in clipboard."
+      : "Emailul a fost pregatit. Mesajul a fost copiat in clipboard; ataseaza fisierul .eazycrypt descarcat.",
+    "info"
+  );
+
+  try {
+    await logShare(currentUser, {
+      targetType: "file",
+      fileName: encryptedName,
+      status: "prepared",
+      method: "mailto"
+    });
+  } catch (error) {
+    console.warn("Share metadata could not be saved.", error);
+  }
+});
+
+const authUser = await waitForAuth();
+currentUser = authUser?.emailVerified ? authUser : getSavedAuthSession();
+currentProfile = currentUser ? await getUserProfile(currentUser) : { role: "guest" };
+setSharePanelVisible(false);

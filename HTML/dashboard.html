@@ -20,6 +20,26 @@
         </select>
 
         <button id="logoutBtn" data-i18n="logout">Logout</button>
+
+        <div id="accountMenuWrap" class="account-menu-wrap hidden">
+          <button id="menuToggle" class="menu-toggle" type="button" aria-label="Meniu cont">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+
+          <div id="accountMenu" class="account-menu hidden">
+            <p class="menu-label" data-i18n="myAccount">Contul meu</p>
+            <strong id="menuEmail">Guest</strong>
+            <span id="menuRole">Rol: guest</span>
+            <button id="menuHistoryBtn" class="menu-link" type="button" data-i18n="accountHistory">Istoric</button>
+            <button id="menuAccountBtn" class="menu-link" type="button" data-i18n="myAccount">Contul meu</button>
+            <div class="menu-stats">
+              <span data-i18n="accountActions">Actiuni</span>
+              <strong id="menuActivityCount">0</strong>
+            </div>
+          </div>
+        </div>
       </div>
     </nav>
 
@@ -49,9 +69,15 @@
         <button onclick="window.location.href='security.html'" data-i18n="details">Detalii</button>
       </div>
 
+      <div id="historyCard" class="card hidden" hidden>
+        <h3 data-i18n="accountHistory">Istoric personal</h3>
+        <p data-i18n="historyCardDesc">Vezi activitatile tale salvate ca metadata, fara continut sau chei.</p>
+        <button onclick="window.location.href='history.html'" data-i18n="openHistory">Deschide istoric</button>
+      </div>
+
       <div id="adminCard" class="card admin-card hidden" hidden>
         <h3 data-i18n="adminPanel">Admin Panel</h3>
-        <p data-i18n="adminPanelDesc">Zona demonstrativa disponibila doar pentru rolul admin.</p>
+        <p data-i18n="adminPanelDesc">Zona functionala disponibila doar pentru rolul admin.</p>
         <button onclick="window.location.href='admin.html'" data-i18n="openAdmin">Open admin</button>
       </div>
 

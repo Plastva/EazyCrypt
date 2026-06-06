@@ -1,24 +1,10 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
 import {
-  getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  sendEmailVerification
+  sendEmailVerification,
+  signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCLdxgHBZjHBFiD-LEM4MF0fVFx-iBb1KQ",
-  authDomain: "eazycrypt-92604.firebaseapp.com",
-  projectId: "eazycrypt-92604",
-  storageBucket: "eazycrypt-92604.firebasestorage.app",
-  messagingSenderId: "200384164661",
-  appId: "1:200384164661:web:a429f006ac8efd686ad27c",
-  measurementId: "G-G8VEQH03E7"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+import { auth, ensureUserProfile, getFallbackRole, getUserProfile } from "./firebase-service.js";
 
 const loginBox = document.getElementById("loginBox");
 const registerBox = document.getElementById("registerBox");
@@ -33,6 +19,33 @@ function showMessage(text, type) {
 function clearMessage() {
   messageBox.textContent = "";
   messageBox.className = "message hidden";
+}
+
+async function saveProfileWithoutBlockingLogin(user) {
+  try {
+    await ensureUserProfile(user);
+    return true;
+  } catch (error) {
+    console.warn("Profilul Firestore nu a putut fi salvat, dar autentificarea continua.", error);
+    return false;
+  }
+}
+
+function saveProfileInBackground(user) {
+  saveProfileWithoutBlockingLogin(user);
+}
+
+function saveAuthenticatedSession(user, profile = null) {
+  const session = {
+    uid: user.uid,
+    email: user.email || "",
+    role: profile?.role || getFallbackRole(user),
+    savedAt: Date.now()
+  };
+
+  localStorage.setItem("eazycryptAuthSession", JSON.stringify(session));
+  sessionStorage.setItem("eazycryptLoginRedirect", "true");
+  localStorage.removeItem("eazycryptGuestMode");
 }
 
 function checkPasswordRules(password) {
@@ -75,78 +88,125 @@ document.getElementById("toLogin").onclick = () => {
   loginBox.classList.remove("hidden");
 };
 
-document.getElementById("registerBtn").onclick = () => {
+async function registerUser() {
   const email = document.getElementById("registerEmail").value.trim();
   const password = document.getElementById("registerPassword").value;
 
   if (!email || !password) {
-    showMessage("Completează emailul și parola.", "error");
+    showMessage("Completeaza emailul si parola.", "error");
     return;
   }
 
   if (!isStrongPassword(password)) {
-    showMessage("Parola trebuie să respecte toate regulile de securitate.", "error");
+    showMessage("Parola trebuie sa respecte toate regulile de securitate.", "error");
     return;
   }
 
-  showMessage("Se creează contul...", "info");
+  showMessage("Se creeaza contul...", "info");
 
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      sendEmailVerification(userCredential.user).then(() => {
-        showMessage("Cont creat cu succes! Verifică emailul pentru confirmare.", "success");
-      });
-    })
-    .catch((error) => {
-      showMessage(getFirebaseErrorMessage(error.code), "error");
-    });
-};
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    await sendEmailVerification(userCredential.user);
+    saveProfileInBackground(userCredential.user);
+    showMessage("Cont creat cu succes! Verifica emailul pentru confirmare.", "success");
+  } catch (error) {
+    console.error("Register error:", error);
+    showMessage(getFirebaseErrorMessage(error), "error");
+  }
+}
 
-document.getElementById("loginBtn").onclick = () => {
+async function loginUser() {
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
 
+  localStorage.removeItem("eazycryptGuestMode");
+  sessionStorage.removeItem("eazycryptLoginRedirect");
+
   if (!email || !password) {
-    showMessage("Introdu emailul și parola.", "error");
+    showMessage("Introdu emailul si parola.", "error");
     return;
   }
 
-  showMessage("Se verifică datele...", "info");
+  showMessage("Se verifica datele...", "info");
 
-  signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      if (userCredential.user.emailVerified) {
-        showMessage("Login reușit! Se deschide aplicația...", "success");
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
-        setTimeout(() => {
-          window.location.href = "dashboard.html";
-        }, 900);
-      } else {
-        showMessage("Confirmă emailul înainte de a intra în aplicație.", "error");
-      }
-    })
-    .catch((error) => {
-      showMessage(getFirebaseErrorMessage(error.code), "error");
-    });
-};
+    if (!userCredential.user.emailVerified) {
+      sendEmailVerification(userCredential.user).catch((error) => {
+        console.warn("Emailul de verificare nu a putut fi retrimis.", error);
+      });
+      showMessage("Confirma emailul inainte de a intra in aplicatie. Am incercat sa retrimit emailul de verificare.", "error");
+      return;
+    }
 
-function getFirebaseErrorMessage(code) {
+    const profile = await getUserProfile(userCredential.user);
+
+    if (profile.status === "deleted") {
+      await signOut(auth);
+      localStorage.removeItem("eazycryptAuthSession");
+      showMessage("Acest cont a fost dezactivat de administrator.", "error");
+      return;
+    }
+
+    saveAuthenticatedSession(userCredential.user, profile);
+    saveProfileInBackground(userCredential.user);
+    showMessage("Login reusit! Se deschide aplicatia...", "success");
+
+    setTimeout(() => {
+      window.location.href = "dashboard.html?auth=1";
+    }, 900);
+  } catch (error) {
+    console.error("Login error:", error);
+    showMessage(getFirebaseErrorMessage(error), "error");
+  }
+}
+
+function continueAsGuest() {
+  sessionStorage.removeItem("eazycryptLoginRedirect");
+  localStorage.removeItem("eazycryptAuthSession");
+  localStorage.setItem("eazycryptGuestMode", "true");
+  window.location.href = "dashboard.html";
+}
+
+document.getElementById("registerBtn").onclick = registerUser;
+document.getElementById("loginBtn").onclick = loginUser;
+document.getElementById("guestBtn")?.addEventListener("click", continueAsGuest);
+
+["loginEmail", "loginPassword"].forEach((id) => {
+  document.getElementById(id).addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      loginUser();
+    }
+  });
+});
+
+function getFirebaseErrorMessage(error) {
+  const code = error?.code || "unknown";
+
   switch (code) {
     case "auth/email-already-in-use":
       return "Acest email este deja folosit.";
     case "auth/invalid-email":
       return "Emailul introdus nu este valid.";
     case "auth/weak-password":
-      return "Parola este prea slabă.";
+      return "Parola este prea slaba.";
     case "auth/user-not-found":
-      return "Nu există cont cu acest email.";
+      return "Nu exista cont cu acest email.";
     case "auth/wrong-password":
-      return "Parola este greșită.";
+      return "Parola este gresita.";
     case "auth/invalid-credential":
-      return "Email sau parolă incorectă.";
+      return "Email sau parola incorecta.";
     case "auth/too-many-requests":
-      return "Prea multe încercări. Încearcă mai târziu.";
+      return "Prea multe incercari. Incearca mai tarziu.";
+    case "permission-denied":
+      return "Autentificarea a reusit, dar Firestore blocheaza salvarea profilului. Verifica regulile Firestore.";
+    case "unavailable":
+      return "Firebase este momentan indisponibil. Incearca din nou.";
+    case "failed-precondition":
+      return "Firestore are nevoie de configurare suplimentara in Firebase Console.";
     default:
-      return "A apărut o eroare. Încearcă din nou.";
+      return `A aparut o eroare (${code}). Incearca din nou.`;
   }
 }

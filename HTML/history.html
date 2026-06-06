@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <title>Istoric - EazyCrypt</title>
+  <link rel="stylesheet" href="../CSS/dashboard.css">
+</head>
+<body>
+
+  <div class="dashboard">
+    <nav class="navbar">
+      <div class="logo">EazyCrypt</div>
+
+      <div class="nav-actions">
+        <select id="languageSelect" class="language-select">
+          <option value="ro">RO</option>
+          <option value="en">EN</option>
+          <option value="ru">RU</option>
+        </select>
+
+        <button onclick="window.location.href='dashboard.html'" data-i18n="back">Inapoi</button>
+      </div>
+    </nav>
+
+    <main class="admin-panel">
+      <h1 data-i18n="accountHistory">Istoric personal</h1>
+      <p id="historyIntro" data-i18n="historyIntro">
+        Aici apar doar activitatile tale, salvate ca metadata. Continutul, parolele si cheile nu sunt salvate.
+      </p>
+
+      <section class="admin-stats">
+        <div class="stat-box">
+          <span id="historyTotal">0</span>
+          <p data-i18n="totalActions">Total actiuni</p>
+        </div>
+        <div class="stat-box">
+          <span id="historyFiles">0</span>
+          <p data-i18n="accountFiles">Fisiere</p>
+        </div>
+        <div class="stat-box">
+          <span id="historyTexts">0</span>
+          <p data-i18n="accountTexts">Texte</p>
+        </div>
+      </section>
+
+      <section class="admin-tool">
+        <h2 data-i18n="recentActivities">Activitati recente</h2>
+        <div id="historyMessage" class="admin-message info" data-i18n="loadingHistory">Se incarca istoricul...</div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th data-i18n="date">Data</th>
+                <th data-i18n="action">Actiune</th>
+                <th>Tip</th>
+                <th data-i18n="file">Fisier</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="../JS/translations.js"></script>
+  <script type="module" src="../JS/history.js"></script>
+</body>
+</html>

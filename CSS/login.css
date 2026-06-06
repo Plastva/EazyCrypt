@@ -103,6 +103,11 @@ button:hover {
   box-shadow: 0 10px 25px rgba(59,130,246,0.35);
 }
 
+.secondary-auth-btn {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
 .switch {
   text-align: center;
   margin-top: 22px;

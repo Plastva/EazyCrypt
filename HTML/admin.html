@@ -25,13 +25,13 @@
     <main class="admin-panel">
       <h1 data-i18n="adminPanel">Admin Panel</h1>
       <p data-i18n="adminIntro">
-        Aceasta pagina este o demonstratie simpla de acces pe baza de rol admin.
+        Administrare utilizatori, roluri si activitati salvate ca metadata zero-knowledge.
       </p>
 
       <section class="admin-stats">
         <div class="stat-box">
           <span id="adminCount">0</span>
-          <p data-i18n="adminCountLabel">Admini demo</p>
+          <p data-i18n="adminCountLabel">Utilizatori</p>
         </div>
         <div class="stat-box">
           <span id="normalUserCount">0</span>
@@ -39,22 +39,21 @@
         </div>
         <div class="stat-box">
           <span id="activityCount">0</span>
-          <p data-i18n="activityCountLabel">Actiuni in jurnal</p>
+          <p data-i18n="encryptDecryptCount">Criptari / decriptari</p>
+        </div>
+        <div class="stat-box">
+          <span id="shareCount">0</span>
+          <p data-i18n="shares">Partajari</p>
         </div>
       </section>
 
       <section class="admin-tool">
-        <h2 data-i18n="roleManagement">Gestionare roluri demo</h2>
+        <h2 data-i18n="roleManagement">Gestionare roluri</h2>
         <p data-i18n="roleManagementDesc">
-          Adauga un email in lista de admini pentru a afisa butonul Admin Panel dupa autentificare.
+          Rolurile sunt citite si actualizate in Firestore. Adminul nu vede continut, parole sau chei.
         </p>
 
         <div id="adminMessage" class="admin-message hidden"></div>
-
-        <div class="admin-form">
-          <input type="email" id="adminEmailInput" data-i18n-placeholder="adminEmailPlaceholder" placeholder="email@example.com">
-          <button id="addAdminBtn" data-i18n="addAdmin">Adauga admin</button>
-        </div>
 
         <div class="admin-table-wrap">
           <table class="admin-table">
@@ -62,6 +61,7 @@
               <tr>
                 <th data-i18n="email">Email</th>
                 <th data-i18n="currentRole">Rol curent</th>
+                <th data-i18n="createdAt">Creat la</th>
                 <th data-i18n="actions">Actiuni</th>
               </tr>
             </thead>
@@ -73,10 +73,9 @@
       <section class="admin-tool">
         <h2 data-i18n="activityLog">Jurnal activitate</h2>
         <p data-i18n="activityLogDesc">
-          Jurnal local demonstrativ pentru actiunile facute in Admin Panel.
+          Sunt afisate doar metadata: utilizator, tip actiune, data, status si nume fisier daca exista.
         </p>
         <ul id="activityLog" class="activity-log"></ul>
-        <button id="clearLogBtn" class="secondary-admin-btn" data-i18n="clearLog">Curata jurnal</button>
       </section>
     </main>
   </div>

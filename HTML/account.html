@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <title>Contul meu - EazyCrypt</title>
+  <link rel="stylesheet" href="../CSS/dashboard.css">
+</head>
+<body>
+
+  <div class="dashboard">
+    <nav class="navbar">
+      <div class="logo">EazyCrypt</div>
+
+      <div class="nav-actions">
+        <select id="languageSelect" class="language-select">
+          <option value="ro">RO</option>
+          <option value="en">EN</option>
+          <option value="ru">RU</option>
+        </select>
+
+        <button onclick="window.location.href='dashboard.html'" data-i18n="back">Inapoi</button>
+      </div>
+    </nav>
+
+    <main class="admin-panel">
+      <h1 data-i18n="myAccount">Contul meu</h1>
+      <p data-i18n="accountIntro">
+        Datele de cont si istoricul personal sunt afisate fara continut, parole sau chei.
+      </p>
+
+      <div id="accountMessage" class="admin-message info" data-i18n="loadingAccount">
+        Se incarca datele contului...
+      </div>
+
+      <section class="admin-stats">
+        <div class="stat-box">
+          <span id="accountRole">guest</span>
+          <p data-i18n="currentRole">Rol curent</p>
+        </div>
+        <div class="stat-box">
+          <span id="accountTotal">0</span>
+          <p data-i18n="accountActions">Actiuni</p>
+        </div>
+        <div class="stat-box">
+          <span id="accountFiles">0</span>
+          <p data-i18n="accountFiles">Fisiere</p>
+        </div>
+        <div class="stat-box">
+          <span id="accountTexts">0</span>
+          <p data-i18n="accountTexts">Texte</p>
+        </div>
+      </section>
+
+      <section class="admin-tool">
+        <h2 data-i18n="accountDetails">Detalii cont</h2>
+        <div class="account-details-grid">
+          <div>
+            <span data-i18n="email">Email</span>
+            <strong id="accountEmail">-</strong>
+          </div>
+          <div>
+            <span>UID</span>
+            <strong id="accountUid">-</strong>
+          </div>
+          <div>
+            <span>Status</span>
+            <strong id="accountStatus">-</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="admin-tool">
+        <h2 data-i18n="accountHistory">Istoric personal</h2>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th data-i18n="date">Data</th>
+                <th data-i18n="action">Actiune</th>
+                <th>Tip</th>
+                <th data-i18n="file">Fisier</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="accountHistoryBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="admin-tool danger-zone">
+        <h2 data-i18n="accountDelete">Stergere cont</h2>
+        <p data-i18n="accountDeleteDesc">
+          Stergerea marcheaza contul ca sters in metadata si incearca eliminarea contului din Firebase Authentication.
+          Firebase poate cere relogare recenta.
+        </p>
+        <button id="deleteAccountBtn" class="danger-account-btn" type="button" data-i18n="deleteMyAccount">
+          Sterge contul meu
+        </button>
+      </section>
+    </main>
+  </div>
+
+  <script src="../JS/translations.js"></script>
+  <script type="module" src="../JS/account.js"></script>
+</body>
+</html>

@@ -66,6 +66,94 @@ body {
   font-weight: bold;
 }
 
+.account-menu-wrap {
+  position: relative;
+}
+
+.menu-toggle {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.14);
+  cursor: pointer;
+}
+
+.menu-toggle span {
+  width: 19px;
+  height: 2px;
+  border-radius: 999px;
+  background: white;
+}
+
+.account-menu {
+  position: absolute;
+  top: 52px;
+  right: 0;
+  z-index: 10;
+  width: 260px;
+  padding: 18px;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 18px;
+  background: rgba(15,23,42,0.94);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 18px 45px rgba(0,0,0,0.35);
+}
+
+.menu-label {
+  margin: 0 0 8px;
+  color: #bfdbfe;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.account-menu strong,
+.account-menu span {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.account-menu span {
+  margin-top: 6px;
+  color: #dbeafe;
+  font-size: 14px;
+}
+
+.menu-link {
+  width: 100%;
+  margin-top: 12px;
+  padding: 11px 12px;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  background: rgba(255,255,255,0.12);
+  cursor: pointer;
+  font-weight: bold;
+  text-align: left;
+}
+
+.menu-link:hover {
+  background: rgba(59,130,246,0.24);
+}
+
+.menu-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.09);
+}
+
+.menu-stats strong {
+  font-size: 20px;
+}
+
 .cards {
   display: flex;
   gap: 25px;
@@ -138,7 +226,7 @@ body {
 
 .admin-stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 14px;
   margin: 24px 0;
 }
@@ -189,6 +277,35 @@ body {
   font-size: 15px;
 }
 
+.role-select {
+  min-width: 110px;
+  padding: 9px 10px;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  background: rgba(255,255,255,0.14);
+  outline: none;
+  font-weight: bold;
+}
+
+.role-select option {
+  color: black;
+}
+
+.status-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.status-badge.deleted {
+  color: #fecaca;
+  background: rgba(239,68,68,0.2);
+}
+
 .admin-form button,
 .secondary-admin-btn,
 .table-action-btn {
@@ -206,8 +323,26 @@ body {
   background: rgba(255,255,255,0.14);
 }
 
+.table-action-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .table-action-btn {
   padding: 8px 12px;
+  white-space: nowrap;
+}
+
+.primary-action {
+  background: linear-gradient(135deg, #06b6d4, #3b82f6);
+}
+
+.secondary-action {
+  background: rgba(255,255,255,0.14);
+}
+
+.danger-action {
   background: rgba(239,68,68,0.7);
 }
 
@@ -262,6 +397,57 @@ body {
   padding-left: 18px;
 }
 
+.account-details p {
+  margin: 10px 0;
+  overflow-wrap: anywhere;
+}
+
+.account-details-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.account-details-grid div {
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.08);
+}
+
+.account-details-grid span {
+  display: block;
+  margin-bottom: 8px;
+  color: #bfdbfe;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.account-details-grid strong {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.danger-zone {
+  border-color: rgba(239,68,68,0.35);
+}
+
+.danger-account-btn {
+  width: 100%;
+  margin-top: 10px;
+  border: none;
+  padding: 13px 16px;
+  border-radius: 12px;
+  color: white;
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.danger-account-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
 .hidden,
 [hidden] {
   display: none !important;
@@ -279,6 +465,26 @@ body {
 
   .admin-form {
     flex-direction: column;
+  }
+
+  .account-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .navbar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .nav-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .account-menu {
+    left: 0;
+    right: auto;
   }
 }
 .nav-actions {
